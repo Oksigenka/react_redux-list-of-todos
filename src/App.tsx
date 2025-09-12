@@ -1,26 +1,67 @@
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import { Loader, TodoFilter, TodoList, TodoModal } from './components';
+import { useEffect, useState } from 'react';
+import { getTodos, getUser } from './api';
+import { useDispatch, useSelector } from 'react-redux';
+import { setTodos as setTodosAction } from './features/todos';
+import { RootState } from './app/store';
+import { clearCurrentTodo } from './features/currentTodo';
+import { User } from './types/User';
 
-export const App = () => (
-  <>
-    <div className="section">
-      <div className="container">
-        <div className="box">
-          <h1 className="title">Todos:</h1>
+export const App = () => {
+  const [loading, setLoading] = useState(true);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [userLoading, setUserLoading] = useState(false);
 
-          <div className="block">
-            <TodoFilter />
-          </div>
+  const dispatch = useDispatch();
+  const selectedTodo = useSelector(
+    (state: RootState) => state.currentTodoSlice,
+  );
 
-          <div className="block">
-            <Loader />
-            <TodoList />
+  useEffect(() => {
+    getTodos()
+      .then(tods => dispatch(setTodosAction(tods)))
+      .finally(() => setLoading(false));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!selectedTodo) {
+      setSelectedUser(null);
+
+      return;
+    }
+
+    setUserLoading(true);
+    getUser(selectedTodo.userId)
+      .then(user => setSelectedUser(user))
+      .finally(() => setUserLoading(false));
+  }, [selectedTodo]);
+
+  return (
+    <>
+      <div className="section">
+        <div className="container">
+          <div className="box">
+            <h1 className="title">Todos:</h1>
+
+            <div className="block">
+              <TodoFilter />
+            </div>
+
+            <div className="block">{loading ? <Loader /> : <TodoList />}</div>
           </div>
         </div>
       </div>
-    </div>
 
-    <TodoModal />
-  </>
-);
+      {selectedTodo && (
+        <TodoModal
+          todo={selectedTodo}
+          user={selectedUser}
+          isLoading={userLoading}
+          onClose={() => dispatch(clearCurrentTodo())}
+        />
+      )}
+    </>
+  );
+};
