@@ -12,10 +12,6 @@ export const selectFilteredTodos = (state: RootState): Todo[] => {
 
   return todos
     .filter(todo => {
-      if (status === 'all') {
-        return true;
-      }
-
       if (status === 'completed') {
         return todo.completed;
       }

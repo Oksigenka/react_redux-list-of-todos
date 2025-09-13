@@ -3,21 +3,18 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import { Loader, TodoFilter, TodoList, TodoModal } from './components';
 import { useEffect, useState } from 'react';
 import { getTodos, getUser } from './api';
-import { useDispatch, useSelector } from 'react-redux';
 import { setTodos as setTodosAction } from './features/todos';
-import { RootState } from './app/store';
 import { clearCurrentTodo } from './features/currentTodo';
 import { User } from './types/User';
+import { useAppDispatch, useAppSelector } from './app/hooks';
 
 export const App = () => {
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [userLoading, setUserLoading] = useState(false);
 
-  const dispatch = useDispatch();
-  const selectedTodo = useSelector(
-    (state: RootState) => state.currentTodoSlice,
-  );
+  const dispatch = useAppDispatch();
+  const selectedTodo = useAppSelector(state => state.currentTodoSlice);
 
   useEffect(() => {
     getTodos()

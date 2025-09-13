@@ -1,11 +1,11 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../app/store';
 import { setStatus, setQuery } from '../../features/filter';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { Status } from '../../types/Status';
 
 export const TodoFilter: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { status, query } = useSelector((state: RootState) => state.filter);
+  const dispatch = useAppDispatch();
+  const { status, query } = useAppSelector(state => state.filter);
 
   return (
     <form
@@ -17,7 +17,7 @@ export const TodoFilter: React.FC = () => {
           <select
             data-cy="statusSelect"
             value={status}
-            onChange={e => dispatch(setStatus(e.target.value as typeof status))}
+            onChange={e => dispatch(setStatus(e.target.value as Status))}
           >
             <option value="all">All</option>
             <option value="active">Active</option>

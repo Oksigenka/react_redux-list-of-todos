@@ -1,17 +1,14 @@
 /* eslint-disable */
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../app/store';
 import { selectFilteredTodos } from '../../features/selectors';
 import { Todo } from '../../types/Todo';
 import { clearCurrentTodo, setCurrentTodo } from '../../features/currentTodo';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 export const TodoList: React.FC = () => {
-  const dispatch = useDispatch();
-  const todos = useSelector((state: RootState) => selectFilteredTodos(state));
-  const selectedTodo = useSelector(
-    (state: RootState) => state.currentTodoSlice,
-  );
+  const dispatch = useAppDispatch();
+  const todos = useAppSelector(selectFilteredTodos);
+  const selectedTodo = useAppSelector(state => state.currentTodoSlice);
 
   const handleSelect = (todo: Todo) => {
     if (selectedTodo?.id === todo.id) {
