@@ -18,7 +18,8 @@ export const App = () => {
 
   useEffect(() => {
     getTodos()
-      .then(tods => dispatch(setTodosAction(tods)))
+      .then(todos => dispatch(setTodosAction(todos)))
+      .catch(() => alert('Error while loading todos'))
       .finally(() => setLoading(false));
   }, [dispatch]);
 
@@ -32,6 +33,7 @@ export const App = () => {
     setUserLoading(true);
     getUser(selectedTodo.userId)
       .then(user => setSelectedUser(user))
+      .catch(() => alert('Error whith selected todo'))
       .finally(() => setUserLoading(false));
   }, [selectedTodo]);
 
